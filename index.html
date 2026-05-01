@@ -551,16 +551,19 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     body: JSON.stringify(formData)
                 });
 
-                // No-cors doesn't return response, so we assume success
-                loading.classList.remove('show');
-                statusMessage.classList.add('show', 'success');
-                statusMessage.textContent = '✓ Successfully added to inventory!';
+                const result = await response.json();
                 
-                form.reset();
+                if (result.success) {
+                    loading.classList.remove('show');
+                    statusMessage.classList.add('show', 'success');
+                    statusMessage.textContent = '✓ Successfully added to inventory!';
+                    form.reset();
+                } else {
+                    throw new Error('Request failed');
+                }
                 
                 setTimeout(() => {
                     statusMessage.classList.remove('show');
@@ -568,12 +571,13 @@
 
             } catch (error) {
                 loading.classList.remove('show');
-                statusMessage.classList.add('show', 'info');
-                statusMessage.textContent = 'Form ready! (Connect your Google Apps Script to auto-submit)';
+                statusMessage.classList.add('show', 'error');
+                statusMessage.textContent = '✗ Error: ' + error.message + '. Check console for details.';
+                console.error('Form submission error:', error);
                 
                 setTimeout(() => {
                     statusMessage.classList.remove('show');
-                }, 4000);
+                }, 6000);
             }
         });
     </script>
