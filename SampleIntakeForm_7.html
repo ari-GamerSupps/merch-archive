@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Intake Form - GamerSupps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: block;
+        }
+
+        input[data-dropdown] {
+            padding-right: 12px;
+        }
+
+        /* Style native browser dropdown arrow to light gray */
+        input[data-dropdown]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) brightness(0.7);
+            cursor: pointer;
+        }
+
+        input[data-dropdown]::-webkit-outer-spin-button,
+        input[data-dropdown]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 25px;
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sample Intake</h1>
+            <p>Log new merchandise samples</p>
+        </div>
+
+        <form id="intakeForm">
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="productName">Product Name <span class="required">*</span></label>
+                <input type="text" id="productName" name="productName" placeholder="e.g., Limited Edition Cup" required>
+            </div>
+
+            <!-- Sheet Selection (Not Submitted) -->
+            <div class="form-group">
+                <label for="sheetName">Inventory Category <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="sheetName" 
+                        placeholder="Type to search or select category" 
+                        list="sheetList"
+                        autocomplete="off"
+                        data-dropdown="sheetList"
+                        required
+                    >
+                </div>
+                <datalist id="sheetList">
+                    <option value="Apparel"></option>
+                    <option value="Side Items"></option>
+                    <option value="Cups"></option>
+                </datalist>
+            </div>
+
+            <!-- Manufacturer & Sample No (Row) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="manufacturer">Manufacturer</label>
+                    <input type="text" id="manufacturer" name="manufacturer" placeholder="e.g., Drinkware Co.">
+                </div>
+                <div class="form-group">
+                    <label for="sampleNo">Sample No. <span class="required">*</span></label>
+                    <input type="text" id="sampleNo" name="sampleNo" placeholder="e.g., S-001" required>
+                </div>
+            </div>
+
+            <!-- Brand -->
+            <div class="form-group">
+                <label for="brand">Brand <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="brand" 
+                        name="brand" 
+                        placeholder="Type to search or add new brand" 
+                        list="brandList"
+                        autocomplete="off"
+                        data-dropdown="brandList"
+                        required
+                    >
+                </div>
+                <datalist id="brandList">
+                    <option value="Gamer Supps"></option>
+                    <option value="VCard"></option>
+                    <option value="Shylily"></option>
+                    <option value="Numi"></option>
+                    <option value="Bao"></option>
+                    <option value="AmaLee"></option>
+                    <option value="Buffpup"></option>
+                    <option value="Camila"></option>
+                    <option value="CodeMiko"></option>
+                    <option value="Coqui"></option>
+                    <option value="CottontailVA"></option>
+                    <option value="CyYu"></option>
+                    <option value="DokiBird"></option>
+                    <option value="Dya Rikku"></option>
+                    <option value="Ebiko"></option>
+                    <option value="FeFe"></option>
+                    <option value="Filian"></option>
+                    <option value="Flork"></option>
+                    <option value="FoxyReine"></option>
+                    <option value="Fream"></option>
+                    <option value="FroggyLoch"></option>
+                    <option value="Juniper"></option>
+                    <option value="Layna Lazar"></option>
+                    <option value="Lord Aethelstan"></option>
+                    <option value="Lucy Pyre"></option>
+                    <option value="MeatCanyon"></option>
+                    <option value="MoistCr1TiKaL"></option>
+                    <option value="Nanoless"></option>
+                    <option value="Nyanners"></option>
+                    <option value="PaymoneyWubby"></option>
+                    <option value="Rainhoe"></option>
+                    <option value="Sansin"></option>
+                    <option value="Shoto"></option>
+                    <option value="Silvervale"></option>
+                    <option value="Sinder"></option>
+                    <option value="Totless"></option>
+                    <option value="sMii7Y"></option>
+                    <option value="Trickywi"></option>
+                    <option value="Vei"></option>
+                    <option value="Vienna"></option>
+                    <option value="Yoclesh"></option>
+                    <option value="Yuzu"></option>
+                    <option value="CaseOh"></option>
+                    <option value="AlCandii"></option>
+                    <option value="Arielle"></option>
+                    <option value="ChaChaYourVmom"></option>
+                    <option value="Clooless"></option>
+                    <option value="deme"></option>
+                    <option value="KokoNuts"></option>
+                    <option value="Meru"></option>
+                    <option value="Milky"></option>
+                    <option value="LilGasMask"></option>
+                    <option value="Nagzz21"></option>
+                    <option value="obkatiekat"></option>
+                    <option value="OverEzEggs"></option>
+                    <option value="PorcelainMaid"></option>
+                    <option value="Saruei"></option>
+                    <option value="Spite"></option>
+                    <option value="Squchan"></option>
+                    <option value="SwaggerSouls"></option>
+                    <option value="TheRussianBadger"></option>
+                    <option value="Toma"></option>
+                    <option value="Vexoria"></option>
+                </datalist>
+            </div>
+
+            <!-- Photographer -->
+            <div class="form-group">
+                <label for="photographer">Photographer</label>
+                <input type="text" id="photographer" name="photographer" placeholder="Your name">
+            </div>
+
+            <!-- Approval Status -->
+            <div class="form-group">
+                <label for="approvalStatus">Approval Status <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="approvalStatus" 
+                        name="approvalStatus" 
+                        placeholder="Type to search (press Enter to confirm)"
+                        list="approvalStatusList"
+                        autocomplete="off"
+                        data-dropdown="approvalStatusList"
+                        required
+                    >
+                </div>
+                <datalist id="approvalStatusList">
+                    <option value="Approved"></option>
+                    <option value="Needs Changes"></option>
+                    <option value="Killed"></option>
+                    <option value="Sent To Partner"></option>
+                    <option value="Need To Send To Partner"></option>
+                    <option value="Re-Sampling"></option>
+                </datalist>
+            </div>
+
+            <!-- Current Location & Bulk Status (Row) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="currentLocation">Current Location <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="currentLocation" 
+                            name="currentLocation" 
+                            placeholder="Type to search (press Enter)"
+                            list="locationList"
+                            autocomplete="off"
+                            data-dropdown="locationList"
+                            required
+                        >
+                    </div>
+                    <datalist id="locationList">
+                        <option value="Ari's Office"></option>
+                        <option value="Archive"></option>
+                        <option value="Photo Room"></option>
+                        <option value="Partner Lounge"></option>
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="bulkStatus">Bulk Status</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="bulkStatus" 
+                            name="bulkStatus" 
+                            placeholder="Type to search (press Enter)"
+                            list="bulkStatusList"
+                            autocomplete="off"
+                            data-dropdown="bulkStatusList"
+                        >
+                    </div>
+                    <datalist id="bulkStatusList">
+                        <option value="Landed"></option>
+                        <option value="Not Landed"></option>
+                    </datalist>
+                </div>
+            </div>
+
+            <button type="submit">Add to Inventory</button>
+            <div class="loading" id="loading">Submitting...</div>
+            <div class="status-message" id="statusMessage"></div>
+        </form>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999;">
+            <p><strong>Setup:</strong> Replace SCRIPT_ID in the JavaScript below with your Google Apps Script Deployment ID</p>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/a/macros/gamersupps.gg/s/AKfycbz0Z6rssnzWu7G2BIg-cwn4POzxOZid2Ebs1LFsrgu5egX9a7kjqo39ht7fdY-i0YLmFg/exec';
+        const OPTIONS_URL = SCRIPT_URL;
+
+        const form = document.getElementById('intakeForm');
+        const statusMessage = document.getElementById('statusMessage');
+        const loading = document.getElementById('loading');
+
+        // Start with empty options, will be populated from Google Apps Script
+        let autocompleteOptions = {
+            sheetList: [],
+            brandList: [],
+            approvalStatusList: [],
+            locationList: [],
+            bulkStatusList: []
+        };
+
+        // Fallback options in case fetch fails
+        const fallbackOptions = {
+            sheetList: ['Apparel', 'Side Items', 'Cups'],
+            brandList: [
+                'Gamer Supps', 'VCard', 'Shylily', 'Numi', 'Bao', 'AmaLee', 'Buffpup', 'Camila', 
+                'CodeMiko', 'Coqui', 'CottontailVA', 'CyYu', 'DokiBird', 'Dya Rikku', 'Ebiko', 'FeFe', 
+                'Filian', 'Flork', 'FoxyReine', 'Fream', 'FroggyLoch', 'Juniper', 'Layna Lazar', 
+                'Lord Aethelstan', 'Lucy Pyre', 'MeatCanyon', 'MoistCr1TiKaL', 'Nanoless', 'Nyanners', 
+                'PaymoneyWubby', 'Rainhoe', 'Sansin', 'Shoto', 'Silvervale', 'Sinder', 'Totless', 
+                'sMii7Y', 'Trickywi', 'Vei', 'Vienna', 'Yoclesh', 'Yuzu', 'CaseOh', 'AlCandii', 
+                'Arielle', 'ChaChaYourVmom', 'Clooless', 'deme', 'KokoNuts', 'Meru', 'Milky', 
+                'LilGasMask', 'Nagzz21', 'obkatiekat', 'OverEzEggs', 'PorcelainMaid', 'Saruei', 
+                'Spite', 'Squchan', 'SwaggerSouls', 'TheRussianBadger', 'Toma', 'Vexoria'
+            ],
+            approvalStatusList: ['Approved', 'Needs Changes', 'Killed', 'Sent To Partner', 'Need To Send To Partner', 'Re-Sampling'],
+            locationList: ['Ari\'s Office', 'Archive', 'Photo Room', 'Partner Lounge'],
+            bulkStatusList: ['Landed', 'Not Landed']
+        };
+
+        // Fetch dropdown options from Google Apps Script on page load
+        async function loadDropdownOptions() {
+            try {
+                const response = await fetch(OPTIONS_URL);
+                const data = await response.json();
+                // Update with fetched options
+                Object.assign(autocompleteOptions, data);
+                // Re-initialize dropdown functionality with new options
+                setupAutocomplete();
+            } catch (error) {
+                console.log('Using fallback options');
+                // Use fallback options if fetch fails
+                Object.assign(autocompleteOptions, fallbackOptions);
+                setupAutocomplete();
+            }
+        }
+
+        // Call on page load
+        loadDropdownOptions();
+
+        // Function to populate datalist with options
+        function populateDatalist(dataListId, optionsToShow) {
+            const datalist = document.getElementById(dataListId);
+            datalist.innerHTML = '';
+            optionsToShow.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                datalist.appendChild(option);
+            });
+        }
+
+        // Setup autocomplete for dropdown fields
+        function setupAutocomplete() {
+            document.querySelectorAll('input[data-dropdown]').forEach(input => {
+                const dataListId = input.getAttribute('data-dropdown');
+                const options = autocompleteOptions[dataListId] || [];
+
+                input.addEventListener('input', function() {
+                    const value = this.value.toLowerCase();
+                    
+                    if (!value) {
+                        // Show all options if empty
+                        populateDatalist(dataListId, options);
+                        return;
+                    }
+
+                    // Filter options that match user input
+                    const filtered = options.filter(opt => 
+                        opt.toLowerCase().includes(value)
+                    );
+
+                    // Always show filtered list
+                    populateDatalist(dataListId, filtered.length > 0 ? filtered : options);
+                });
+
+                // Handle Enter key for confirmation
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        
+                        const value = this.value.trim();
+                        
+                        if (value === '') {
+                            return;
+                        }
+
+                        // Move to next field
+                        const nextField = this.closest('form').querySelector('button');
+                        if (nextField) {
+                            nextField.focus();
+                        }
+                    }
+                });
+
+                // Show all options when field gets focus
+                input.addEventListener('focus', function() {
+                    populateDatalist(dataListId, options);
+                });
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            loading.classList.add('show');
+            statusMessage.classList.remove('show', 'success', 'error', 'info');
+
+            const formData = {
+                timestamp: new Date().toLocaleString(),
+                productName: document.getElementById('productName').value,
+                manufacturer: document.getElementById('manufacturer').value,
+                brand: document.getElementById('brand').value,
+                sampleNo: document.getElementById('sampleNo').value,
+                photographer: document.getElementById('photographer').value,
+                approvalStatus: document.getElementById('approvalStatus').value,
+                currentLocation: document.getElementById('currentLocation').value,
+                bulkStatus: document.getElementById('bulkStatus').value
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(formData)
+                });
+
+                // No-cors doesn't return response, so we assume success
+                loading.classList.remove('show');
+                statusMessage.classList.add('show', 'success');
+                statusMessage.textContent = '✓ Successfully added to inventory!';
+                
+                form.reset();
+                
+                setTimeout(() => {
+                    statusMessage.classList.remove('show');
+                }, 4000);
+
+            } catch (error) {
+                loading.classList.remove('show');
+                statusMessage.classList.add('show', 'info');
+                statusMessage.textContent = 'Form ready! (Connect your Google Apps Script to auto-submit)';
+                
+                setTimeout(() => {
+                    statusMessage.classList.remove('show');
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
