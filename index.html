@@ -209,8 +209,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Log new merchandise samples</h1>
-        <p class="subtitle">Fill out the form below to add samples to inventory</p>
+        <h1>Sample Intake Form</h1>
+        <p class="subtitle">This form must be submitted upon receipt of samples</p>
 
         <form id="intakeForm">
             <div class="form-section">
@@ -251,8 +251,8 @@
             </div>
 
             <div class="form-section">
-                <label for="approvalStatus">Approval Status <span class="required">*</span></label>
-                <select id="approvalStatus" name="approvalStatus" required>
+                <label for="approvalStatus">Approval Status</label>
+                <select id="approvalStatus" name="approvalStatus">
                     <option value="">Select status</option>
                 </select>
             </div>
@@ -305,7 +305,8 @@
         });
 
         function loadDropdownOptions() {
-            fetch(SCRIPT_URL)
+            const timestamp = new Date().getTime();
+            fetch(SCRIPT_URL + '?t=' + timestamp)
                 .then(response => response.json())
                 .then(data => {
                     populateDropdown('brandList', data.brandList);
