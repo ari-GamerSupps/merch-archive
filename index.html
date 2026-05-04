@@ -292,16 +292,21 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDwn7cdZBVMLsC8lyxhVp0nkci3KJYbiYNmzbihj2wt0_VV5BmuoGJqhlnrqLEr3x35g/exec';
 
-        const form = document.getElementById('intakeForm');
-        const loading = document.getElementById('loading');
-        const statusMessage = document.getElementById('statusMessage');
-        const imageUpload = document.getElementById('imageUpload');
-        const fileList = document.getElementById('fileList');
+        let form, loading, statusMessage, imageUpload, fileList;
 
         // Load dropdown options on page load
         window.addEventListener('DOMContentLoaded', () => {
+            form = document.getElementById('intakeForm');
+            loading = document.getElementById('loading');
+            statusMessage = document.getElementById('statusMessage');
+            imageUpload = document.getElementById('imageUpload');
+            fileList = document.getElementById('fileList');
+            
             loadDropdownOptions();
             setupImageUploadPreview();
+            
+            // Attach form submission handler
+            form.addEventListener('submit', handleFormSubmit);
         });
 
         function loadDropdownOptions() {
@@ -376,7 +381,7 @@
             imageUpload.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
-        form.addEventListener('submit', async (e) => {
+        async function handleFormSubmit(e) {
             e.preventDefault();
 
             loading.classList.add('show');
@@ -454,7 +459,7 @@
                     statusMessage.classList.remove('show');
                 }, 6000);
             }
-        });
+        }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
